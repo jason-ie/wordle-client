@@ -49,9 +49,9 @@ function createClient() {
     ? tls.connect(port, hostname, onConnect) // If useTLS=true, use tls.connect for server connection
     : net.createConnection(port, hostname, onConnect);
   function onConnect() {
-    console.log(
-      `Connected to ${hostname}:${port} using ${useTLS ? "TLS" : "TCP"}`
-    );
+    // console.log(
+    //   `Connected to ${hostname}:${port} using ${useTLS ? "TLS" : "TCP"}`
+    // );
     helloMSG(client);
   }
 
@@ -62,12 +62,12 @@ function createClient() {
 
   // Error handling
   client.on("error", (error) => {
-    console.log("Error:", error);
+    // console.log("Error:", error);
   });
 
   // Closes program when connection is closed
   client.on("close", () => {
-    console.log("Connection closed");
+    // console.log("Connection closed");
   });
 
   //   client.setTimeout(1000);
@@ -80,20 +80,20 @@ function createClient() {
 // Sends hello message to server
 function helloMSG() {
   let hello = { type: "hello", northeastern_username: username };
-  console.log("Sending hello message:", hello);
+  // console.log("Sending hello message:", hello);
   client.write(JSON.stringify(hello) + "\n");
 }
 
 // Handles start case, sends initial guess message to server, currently using "stare"
 function handleStartCase(msg) {
-  console.log("Received start message: ", msg);
+  // console.log("Received start message: ", msg);
   sendGuess(msg.id, lastWord);
 }
 
 // Sends guess message to server, updates lastWord to the word that was sent
 function sendGuess(id, word) {
   let guess = { type: "guess", id: id, word: word };
-  console.log("Sending guess:", guess);
+  // console.log("Sending guess:", guess);
   lastWord = word;
   client.write(JSON.stringify(guess) + "\n");
 }
@@ -102,18 +102,18 @@ function sendGuess(id, word) {
 function handleRetryCase(msg) {
   let prevGuesses = msg.guesses;
   let lastMarks = prevGuesses[prevGuesses.length - 1].marks; // Marks of the last guess
-  console.log("Received retry message with last marks: ", lastMarks);
+  // console.log("Received retry message with last marks: ", lastMarks);
   possibleWords = filterWords(lastMarks);
-  console.log(
-    `Removing words by incorrect position. There are ${possibleWords.length} possible words left.`
-  );
+  // console.log(
+  //   `Removing words by incorrect position. There are ${possibleWords.length} possible words left.`
+  // );
   sendGuess(msg.id, possibleWords[0]);
 }
 
 // Handles bye case, prints flag and ends connection
 function handleByeCase(msg) {
   const flag = msg.flag;
-  console.log("Game successfully completed. Flag: ", flag);
+  console.log(flag);
   client.end();
 }
 
@@ -132,7 +132,7 @@ function handleServerResponse(data) {
       break;
     case "error":
       //handleErrorCase(msg);
-      console.error("Error:", msg.msg);
+      // console.error("Error:", msg.msg);
       client.destroy();
       break;
   }
